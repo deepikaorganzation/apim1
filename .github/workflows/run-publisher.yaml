@@ -1,0 +1,103 @@
+name: Run - Publisher
+
+on:
+  # Triggers the workflow on pull request events but only for the main branch
+  pull_request:
+    branches: [main]
+    types: [closed]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+    inputs:
+      COMMIT_ID_CHOICE:
+        description: 'Choose "publish-all-artifacts-in-repo" only when you want to force republishing all artifacts (e.g. after build failure). Otherwise stick with the default behavior of "publish-artifacts-in-last-commit"'
+        required: true
+        type: choice
+        default: "publish-artifacts-in-last-commit"
+        options:
+          - "publish-artifacts-in-last-commit"
+          - "publish-all-artifacts-in-repo"
+      ARTIFACT_NAME:
+        description: 'Name of the Repo Folder'     
+        required: true
+        type: string
+
+jobs:
+  get-commit:
+    runs-on: ubuntu-latest
+    steps:
+      # Set the COMMIT_ID env variable
+      - name: Set the Commit Id
+        id: commit
+        run: echo "commit_id=${GITHUB_SHA}" >> $GITHUB_ENV
+    outputs:
+      commit_id: ${{ steps.commit.outputs.commit_id }}
+  #Publish with Commit ID
+  Push-Changes-To-APIM-Dev-With-Commit-ID:
+    if: (github.event.inputs.COMMIT_ID_CHOICE == 'publish-artifacts-in-last-commit' || github.event.inputs.COMMIT_ID_CHOICE == '')
+    needs: get-commit
+    uses: ./.github/workflows/run-publisher-with-env.yaml
+    with:
+      API_MANAGEMENT_ENVIRONMENT: dev # change this to match the dev environment created in settings
+      COMMIT_ID: ${{ needs.get-commit.outputs.commit_id }}
+      API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }} # change this to the artifacts folder
+    secrets: inherit
+
+  #Publish without Commit ID. Publishes all artifacts that reside in the artifacts forlder
+  Push-Changes-To-APIM-Dev-Without-Commit-ID:
+    if: ( github.event.inputs.COMMIT_ID_CHOICE == 'publish-all-artifacts-in-repo' )
+    needs: get-commit
+    uses: ./.github/workflows/run-publisher-with-env.yaml
+    with:
+      API_MANAGEMENT_ENVIRONMENT: dev # change this to match the dev environment created in settings
+      API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }} # change this to the artifacts folder
+    secrets: inherit
+   
+  check-status:
+    needs: [get-commit, Push-Changes-To-APIM-Dev-With-Commit-ID]
+    runs-on: ubuntu-latest
+    steps:
+      - name: checking status
+        run: |
+          echo "get-commit: ${{ needs.get-commit.result }}"
+          echo "Push-Changes-To-APIM-Dev-With-Commit-ID: ${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }}"
+          echo "Push-Changes-To-APIM-Dev-Without-Commit-ID: ${{ github.job.Push-Changes-To-APIM-Dev-Without-Commit-ID.result }}"
+  # Add a combined step for Node.js setup, installing dependencies, and running Postman tests
+  Run-TestCase-For-Dev-With-Commit-ID:
+    needs: [get-commit, Push-Changes-To-APIM-Dev-With-Commit-ID]
+    if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }} == 'success' )
+    uses: ./.github/workflows/run-postman-tests.yaml
+    with:
+      collection_path: ./postman-collection/postmanCollection.json  # Provide the path to your collection
+      environment_path: ./postman-collection/Environment.json  # Provide the path to your environment file
+      folders: "Safe,Unsafe"  # Specify the folders to execute (for non-production)
+
+  Run-TestCase-For-Dev-Without-Commit-ID:
+    needs: [get-commit, Push-Changes-To-APIM-Dev-Without-Commit-ID]
+    if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-Without-Commit-ID.result }} == 'success' )
+    uses: ./.github/workflows/run-postman-tests.yaml
+    with:
+      collection_path: ./postman-collection/postmanCollection.json  # Provide the path to your collection
+      environment_path: ./postman-collection/Environment.json  # Provide the path to your environment file
+      folders: "Safe,Unsafe"  # Specify the folders to execute (for non-production)
+      
+  Push-Changes-To-APIM-Prod-With-Commit-ID:
+    if: (github.event.inputs.COMMIT_ID_CHOICE == 'publish-artifacts-in-last-commit' || github.event.inputs.COMMIT_ID_CHOICE == '')
+    needs: [get-commit, Push-Changes-To-APIM-Dev-With-Commit-ID]
+    uses: ./.github/workflows/run-publisher-with-env.yaml
+    with:
+      API_MANAGEMENT_ENVIRONMENT: prod # change this to match the prod environment created in settings
+      CONFIGURATION_YAML_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }}/config/configuration.prod.yaml # make sure the file is available at the root
+      API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }} # change this to the artifacts folder
+      COMMIT_ID: ${{ needs.get-commit.outputs.commit_id }}
+    secrets: inherit
+
+  Push-Changes-To-APIM-Prod-Without-Commit-ID:
+    if: ( github.event.inputs.COMMIT_ID_CHOICE == 'publish-all-artifacts-in-repo' )
+    needs: [get-commit, Push-Changes-To-APIM-Dev-Without-Commit-ID]
+    uses: ./.github/workflows/run-publisher-with-env.yaml
+    with:
+      API_MANAGEMENT_ENVIRONMENT: prod # change this to match the prod environment created in settings
+      CONFIGURATION_YAML_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }}/config/configuration.prod.yaml # make sure the file is available at the root
+      API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }} # change this to the artifacts folder
+    secrets: inherit

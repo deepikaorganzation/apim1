@@ -1,0 +1,59 @@
+name: Run Postman Tests
+
+on:
+  workflow_call:
+    inputs:
+      collection_path:
+        type: string
+        description: 'Path to the Postman collection file'
+      environment_path:
+        type: string
+        description: 'Path to the Postman environment file'
+      folders:
+        type: string
+        description: 'Comma-separated list of folders to run in the Postman collection'
+
+jobs:
+  setup-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Set up Node.js, Install Dependencies, and Run Postman Tests
+        id: postman_tests
+        run: |
+          echo "Setting up Node.js"
+          npm install -g newman  # Install Newman globally
+          npm install           # Install dependencies if necessary
+
+          echo "Running Postman tests for environment: ${{ inputs.environment_path }}"
+          
+          # Convert the folders from a comma-separated string to an array
+          folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
+          
+          newman_output_file="newman_output.json"
+          
+          # Run Postman tests for each folder
+          for folder in $folders; do
+            echo "Running tests for folder: $folder"
+            newman run ${{ inputs.collection_path }} -e ${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export $newman_output_file
+          done
+
+          # Parse JSON output to calculate the success percentage
+          total_tests=$(jq '.run.stats.total' $newman_output_file)
+          failed_tests=$(jq '.run.stats.failures' $newman_output_file)
+          passed_tests=$((total_tests - failed_tests))
+          success_percentage=$((100 * passed_tests / total_tests))
+
+          # Output the success percentage
+          echo "Test-Result: $success_percentage%"
+
+          # Directly log the success percentage to the same step box using ::notice:: for display
+          echo "::notice::Test-Result: $success_percentage%"  # This will display in the same step's log
+
+          # Optionally, display warning or error based on success rate
+          if [ $success_percentage -lt 80 ]; then
+            echo "::warning::Test-Result: $success_percentage%"  # Warn if below threshold
+          fi
+
+          if [ $success_percentage -eq 100 ]; then
+            echo "::success::Test-Result: $success_percentage%"  # Success annotation
+          fi
