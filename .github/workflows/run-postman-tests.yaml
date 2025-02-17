@@ -19,7 +19,7 @@ jobs:
     steps:
       - name: Install jq
         run: sudo apt-get install -y jq
-        
+
       - name: Set up Node.js, Install Dependencies, and Run Postman Tests
         id: postman_tests
         run: |
@@ -33,15 +33,19 @@ jobs:
           folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
           
           newman_output_file="newman_output.json"
-
-          if ! jq empty $newman_output_file; then
-            echo "Invalid JSON file: $newman_output_file"
-            exit 1
-          fi
+          echo "newman_file: $newman_output_file"
+          # if ! jq empty $newman_output_file; then
+          #   echo "Invalid JSON file: $newman_output_file"
+          #   exit 1
+          # fi
           # Run Postman tests for each folder
-          for folder in $folders; do
+          for folder in "${folders[@]}"; do
             echo "Running tests for folder: $folder"
-            newman run ${{ inputs.collection_path }} -e ${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export $newman_output_file
+            newman run ${{ inputs.collection_path }} -e ${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export "$newman_output_file"
+            
+            # Check the output file
+            ls -l "$newman_output_file"  # List the file to see if it was created
+            cat "$newman_output_file"     # Output the contents of the file
           done
 
           # Parse JSON output to calculate the success percentage
