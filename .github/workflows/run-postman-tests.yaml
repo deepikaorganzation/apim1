@@ -33,15 +33,9 @@ jobs:
           folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
           
           newman_output_file="newman_output.json"
-          if [[ -f "$newman_output_file" ]]; then
-            echo "The file exists at: $(realpath "$newman_output_file")"
-          else
-            echo "File does not exist."
-          fi
-          if [[ -f "$newman_output_file" ]]; then
-            echo "The output file is located at: $newman_output_file"
-          else
-            echo "Output file does not exist."
+          if [[ ! -f "${{ inputs.environment_path }}" ]]; then
+            echo "Error: Environment file does not exist at ${{ inputs.environment_path }}"
+            exit 1
           fi
           # Run Postman tests for each folder
           for folder in "${folders[@]}"; do
