@@ -34,7 +34,7 @@ jobs:
           
           newman_output_file="newman_output.json"
           if [[ ! -f "${{ inputs.collection_path }}" ]]; then
-            echo "Error: Environment file does not exist at ${{ inputs.collection_path }}"
+            echo "Error: Postman file does not exist at ${{ inputs.collection_path }}"
             exit 1
           fi
           if [[ ! -f "${{ inputs.environment_path }}" ]]; then
