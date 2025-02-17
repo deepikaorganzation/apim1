@@ -53,33 +53,24 @@ jobs:
       API_MANAGEMENT_SERVICE_OUTPUT_FOLDER_PATH: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }} # change this to the artifacts folder
     secrets: inherit
    
-  check-status:
-    needs: [get-commit, Push-Changes-To-APIM-Dev-With-Commit-ID]
-    runs-on: ubuntu-latest
-    steps:
-      - name: checking status
-        run: |
-          echo "get-commit: ${{ needs.get-commit.result }}"
-          echo "Push-Changes-To-APIM-Dev-With-Commit-ID: ${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }}"
-          echo "Push-Changes-To-APIM-Dev-Without-Commit-ID: ${{ github.job.Push-Changes-To-APIM-Dev-Without-Commit-ID.result }}"
   # Add a combined step for Node.js setup, installing dependencies, and running Postman tests
   Run-TestCase-For-Dev-With-Commit-ID:
     needs: [get-commit, Push-Changes-To-APIM-Dev-With-Commit-ID]
     if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
     with:
-      collection_path: ./postman-collection/postmanCollection.json  # Provide the path to your collection
-      environment_path: ./postman-collection/Environment.json  # Provide the path to your environment file
-      folders: "Safe,Unsafe"  # Specify the folders to execute (for non-production)
+      collection_path: ./postman-collection/myAPITest.postman_collection.json  # Provide the path to your collection
+      environment_path: ./postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
+      folders: "safe"  # Specify the folders to execute (for non-production)
 
   Run-TestCase-For-Dev-Without-Commit-ID:
     needs: [get-commit, Push-Changes-To-APIM-Dev-Without-Commit-ID]
     if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-Without-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
     with:
-      collection_path: ./postman-collection/postmanCollection.json  # Provide the path to your collection
-      environment_path: ./postman-collection/Environment.json  # Provide the path to your environment file
-      folders: "Safe,Unsafe"  # Specify the folders to execute (for non-production)
+      collection_path: ./postman-collection/myAPITest.postman_collection.json  # Provide the path to your collection
+      environment_path: ./postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
+      folders: "safe"  # Specify the folders to execute (for non-production)
       
   Push-Changes-To-APIM-Prod-With-Commit-ID:
     if: (github.event.inputs.COMMIT_ID_CHOICE == 'publish-artifacts-in-last-commit' || github.event.inputs.COMMIT_ID_CHOICE == '')
