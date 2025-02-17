@@ -44,7 +44,7 @@ jobs:
           # Run Postman tests for each folder
           for folder in "${folders[@]}"; do
             echo "Running tests for folder: $folder"
-            newman run ${{ github.workspace}}/${{ inputs.collection_path }} -e ${{ github.workspace}}/${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export "$newman_output_file"
+            newman run ${{ inputs.collection_path }} -e ${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export "$newman_output_file"
             
             # Check the output file
             ls -l "$newman_output_file"  # List the file to see if it was created
