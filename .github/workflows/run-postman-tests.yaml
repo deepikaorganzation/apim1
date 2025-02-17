@@ -22,7 +22,7 @@ jobs:
         run: |
           echo "Setting up Node.js"
           npm install -g newman  # Install Newman globally
-          npm install           # Install dependencies if necessary
+          # npm install           # Install dependencies if necessary
           echo "Node.js setup complete"
           echo "Running Postman tests for environment: ${{ inputs.environment_path }}"
           
