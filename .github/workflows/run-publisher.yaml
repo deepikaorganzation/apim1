@@ -73,49 +73,18 @@ jobs:
     if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
     with:
-      collection_path: postman-collection/myAPITest.postman_collection.json # Provide the path to your collection
-      environment_path: postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
+      collection_path: "postman-collection/myAPITest.postman_collection.json"  # Provide the path to your collection
+      environment_path: "postman-collection/testEnv.postman_environment.json"  # Provide the path to your environment file
       folders: "safe"  # Specify the folders to execute (for non-production)
 
-  run_postman_tests_with_commit_id:
-    runs-on: ubuntu-latest
-    needs: [get-commit, Push-Changes-To-APIM-Dev-With-Commit-ID]
-    if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }} == 'success' )
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-
-      - name: Set environment variables for Postman paths
-        run: |
-          echo "COLLECTION_PATH=${{ github.workspace }}/postman-collection/myAPITest.postman_collection.json" >> $GITHUB_ENV
-          echo "ENVIRONMENT_PATH=${{ github.workspace }}/postman-collection/testEnv.postman_environment.json" >> $GITHUB_ENV
-
-      - name: Run Postman Tests
-        uses: ./.github/workflows/run-postman-tests.yaml
-        with:
-          collection_path: ${{ env.COLLECTION_PATH }}
-          environment_path: ${{ env.ENVIRONMENT_PATH }}
-          folders: "safe"
-
-  run_postman_tests_without_commit_id:
-    runs-on: ubuntu-latest
+  Run-TestCase-For-Dev-Without-Commit-ID:
     needs: [get-commit, Push-Changes-To-APIM-Dev-Without-Commit-ID]
     if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-Without-Commit-ID.result }} == 'success' )
-    steps:
-      - name: Checkout the repository
-        uses: actions/checkout@v2
-
-      - name: Set environment variables for Postman paths
-        run: |
-          echo "COLLECTION_PATH=${{ github.workspace }}/postman-collection/myAPITest.postman_collection.json" >> $GITHUB_ENV
-          echo "ENVIRONMENT_PATH=${{ github.workspace }}/postman-collection/testEnv.postman_environment.json" >> $GITHUB_ENV
-
-      - name: Run Postman Tests
-        uses: ./.github/workflows/run-postman-tests.yaml
-        with:
-          collection_path: ${{ env.COLLECTION_PATH }}
-          environment_path: ${{ env.ENVIRONMENT_PATH }}
-          folders: "safe"
+    uses: ./.github/workflows/run-postman-tests.yaml
+    with:
+      collection_path: "postman-collection/myAPITest.postman_collection.json"  # Provide the path to your collection
+      environment_path: "postman-collection/testEnv.postman_environment.json"  # Provide the path to your environment file
+      folders: "safe"  # Specify the folders to execute (for non-production)
       
   Push-Changes-To-APIM-Prod-With-Commit-ID:
     if: (github.event.inputs.COMMIT_ID_CHOICE == 'publish-artifacts-in-last-commit' || github.event.inputs.COMMIT_ID_CHOICE == '')
