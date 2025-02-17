@@ -73,8 +73,8 @@ jobs:
     if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-With-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
     with:
-      collection_path: ./postman-collection/myAPITest.postman_collection.json  # Provide the path to your collection
-      environment_path: ./postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
+      collection_path: ../postman-collection/myAPITest.postman_collection.json  # Provide the path to your collection
+      environment_path: ../postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
       folders: "safe"  # Specify the folders to execute (for non-production)
 
   Run-TestCase-For-Dev-Without-Commit-ID:
@@ -82,8 +82,8 @@ jobs:
     if: ( ${{ needs.get-commit.result }} == 'success') && (${{ needs.Push-Changes-To-APIM-Dev-Without-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
     with:
-      collection_path: ./postman-collection/myAPITest.postman_collection.json  # Provide the path to your collection
-      environment_path: ./postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
+      collection_path: ../postman-collection/myAPITest.postman_collection.json  # Provide the path to your collection
+      environment_path: ../postman-collection/testEnv.postman_environment.json  # Provide the path to your environment file
       folders: "safe"  # Specify the folders to execute (for non-production)
       
   Push-Changes-To-APIM-Prod-With-Commit-ID:
