@@ -27,7 +27,7 @@ jobs:
           npm install -g newman  # Install Newman globally
           # npm install           # Install dependencies if necessary
           echo "Node.js setup complete"
-          echo "Running Postman tests for environment: ${{ inputs.environment_path }}"
+          echo "Running Postman tests for environment: ${{ github.workspace}}/${{ inputs.environment_path }}"
           
           # Convert the folders from a comma-separated string to an array
           folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
