@@ -33,18 +33,18 @@ jobs:
           folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
           
           newman_output_file="newman_output.json"
-          if [[ ! -f "${{ inputs.collection_path }}" ]]; then
-            echo "Error: Postman file does not exist at ${{ inputs.collection_path }}"
-            exit 1
-          fi
-          if [[ ! -f "${{ inputs.environment_path }}" ]]; then
-            echo "Error: Environment file does not exist at ${{ inputs.environment_path }}"
-            exit 1
-          fi
+          # if [[ ! -f "${{ inputs.collection_path }}" ]]; then
+          #   echo "Error: Postman file does not exist at ${{ inputs.collection_path }}"
+          #   exit 1
+          # fi
+          # if [[ ! -f "${{ inputs.environment_path }}" ]]; then
+          #   echo "Error: Environment file does not exist at ${{ inputs.environment_path }}"
+          #   exit 1
+          # fi
           # Run Postman tests for each folder
           for folder in "${folders[@]}"; do
             echo "Running tests for folder: $folder"
-            newman run ${{ inputs.collection_path }} -e ${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export "$newman_output_file"
+            newman run ${{ github.workspace}}/${{ inputs.collection_path }} -e ${{ github.workspace}}/${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export "$newman_output_file"
             
             # Check the output file
             ls -l "$newman_output_file"  # List the file to see if it was created

@@ -17,7 +17,7 @@ on:
         - dev
         - prod
       SELECT_TARGET_ENV:
-        description: 'Choose the target environment to extract APIs from'     
+        description: 'Choose the target environment to deploy APIs to'     
         required: true
         type: choice
         options:
