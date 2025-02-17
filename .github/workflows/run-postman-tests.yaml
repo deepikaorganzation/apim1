@@ -17,6 +17,9 @@ jobs:
   setup-and-test:
     runs-on: ubuntu-latest
     steps:
+      - name: Install jq
+        run: sudo apt-get install -y jq
+        
       - name: Set up Node.js, Install Dependencies, and Run Postman Tests
         id: postman_tests
         run: |
@@ -30,7 +33,11 @@ jobs:
           folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
           
           newman_output_file="newman_output.json"
-          
+
+          if ! jq empty $newman_output_file; then
+            echo "Invalid JSON file: $newman_output_file"
+            exit 1
+          fi
           # Run Postman tests for each folder
           for folder in $folders; do
             echo "Running tests for folder: $folder"
