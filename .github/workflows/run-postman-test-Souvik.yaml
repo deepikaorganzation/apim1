@@ -59,14 +59,27 @@ jobs:
         done
 
         # Parse JSON output to calculate success percentage
+        # Parse JSON output to calculate success percentage
         if [[ -f "$newman_output_file" && -s "$newman_output_file" ]]; then
-          total_tests=$(jq '.run.stats.total' $newman_output_file)
-          failed_tests=$(jq '.run.stats.failures' $newman_output_file)
-          passed_tests=$((total_tests - failed_tests))
-          success_percentage=$((100 * passed_tests / total_tests))
-          echo "Total Tests: $total_tests"
-          echo "Failed Tests: $failed_tests"
-          echo "Passed Tests: $passed_tests"
+        total_tests=$(jq '.run.stats.total' $newman_output_file)
+        failed_tests=$(jq '.run.stats.failures' $newman_output_file)
+
+        if [[ -z "$total_tests" || -z "$failed_tests" ]]; then
+            echo "Error: Could not retrieve test statistics from JSON."
+            exit 1
+        fi
+
+        passed_tests=$((total_tests - failed_tests))
+        success_percentage=$((100 * passed_tests / total_tests))
+
+        echo "Total Tests: $total_tests"
+        echo "Failed Tests: $failed_tests"
+        echo "Passed Tests: $passed_tests"
+        echo "Success Percentage: $success_percentage%"
+        else
+        echo "Error: Output file does not exist or is empty."
+        exit 1
+        fi
           # Output success percentage
           echo "Test-Result: $success_percentage%"
           echo "::notice::Test-Result: $success_percentage%"
