@@ -68,12 +68,12 @@ jobs:
             echo "Error: Could not retrieve test statistics from JSON."
             exit 1
         fi
-
+        echo "Total Tests: $total_tests"
+        echo "Failed Tests: $failed_tests"
         passed_tests=$((total_tests - failed_tests))
         success_percentage=$((100 * passed_tests / total_tests))
 
-        echo "Total Tests: $total_tests"
-        echo "Failed Tests: $failed_tests"
+        
         echo "Passed Tests: $passed_tests"
         echo "Success Percentage: $success_percentage%"
         else
