@@ -23,8 +23,8 @@ jobs:
       - name: Set up Node.js, Install Dependencies, and Run Postman Tests
         id: postman_tests
         env: 
-          collection_path: ${{ inputs.collection_path }}
-          environment_path: ${{ inputs.environment_path }}
+          collection_path: ${{github.workspace}}/${{ inputs.collection_path }}
+          environment_path: ${{github.workspace}}/${{ inputs.environment_path }}
         run: |
           echo "Setting up Node.js"
           npm install -g newman  # Install Newman globally
