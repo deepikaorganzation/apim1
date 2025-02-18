@@ -13,6 +13,7 @@ on:
         description: 'Choose the target environment to deploy APIs to'     
         required: true
         type: choice
+        default: dev
         options:
         - dev
         - qa

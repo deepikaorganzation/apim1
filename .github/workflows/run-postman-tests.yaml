@@ -27,15 +27,19 @@ jobs:
           npm install -g newman  # Install Newman globally
           # npm install           # Install dependencies if necessary
           echo "Node.js setup complete"
-          echo "Running Postman tests for environment: ${{ GITHUB.WORKSPACE }}/${{ inputs.environment_path }}"
-          
+
+          # Resolve the paths correctly based on the workspace
+          collection_path="${{ github.workspace }}/${{ inputs.collection_path }}"
+          environment_path="${{ github.workspace }}/${{ inputs.environment_path }}"
+          echo "Running Postman tests for environment: $environment_path"
+
           # Convert the folders from a comma-separated string to an array
           folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
           newman_output_file="newman_output.json"
           
-          for folder in "${folders[@]}"; do
+          for folder in $folders; do
             echo "Running tests for folder: $folder"
-            newman run "${{ GITHUB.WORKSPACE }}/${{ inputs.collection_path }}" -e "${{ GITHUB.WORKSPACE }}/${{ inputs.environment_path }}" --folder "$folder" -r json --reporter-json-export "$newman_output_file"
+            newman run "$collection_path" -e "$environment_path" --folder "$folder" -r json --reporter-json-export "$newman_output_file"
             ls -l "$newman_output_file"
             cat "$newman_output_file"
           done
