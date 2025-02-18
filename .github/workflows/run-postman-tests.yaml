@@ -67,11 +67,16 @@ jobs:
         echo "Total Tests: $total_tests"
         echo "Failed Tests: $failed_tests"
         passed_tests=$((total_tests - failed_tests))
-        success_percentage=$((100 * passed_tests / total_tests))
 
-        
+        if [ $total_tests -ne 0 ]; then
+          success_percentage=$((100 * passed_tests / total_tests))
+        else
+          success_percentage=0
+        fi
+
         echo "Passed Tests: $passed_tests"
         echo "Success Percentage: $success_percentage%"
+        
         else
         echo "Error: Output file does not exist or is empty."
         exit 1
