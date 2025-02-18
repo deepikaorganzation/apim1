@@ -35,7 +35,7 @@ jobs:
           
           for folder in "${folders[@]}"; do
             echo "Running tests for folder: $folder"
-            newman run ${{ GITHUB.WORKSPACE }}/${{ inputs.collection_path }} -e ${{ GITHUB.WORKSPACE }}/${{ inputs.environment_path }} --folder "$folder" -r json --reporter-json-export "$newman_output_file"
+            newman run "${{ GITHUB.WORKSPACE }}/${{ inputs.collection_path }}" -e "${{ GITHUB.WORKSPACE }}/${{ inputs.environment_path }}" --folder "$folder" -r json --reporter-json-export "$newman_output_file"
             ls -l "$newman_output_file"
             cat "$newman_output_file"
           done
