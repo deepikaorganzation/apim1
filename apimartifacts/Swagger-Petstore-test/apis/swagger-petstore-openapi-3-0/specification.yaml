@@ -10,7 +10,7 @@ info:
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: '1.0'
 servers:
-  - url: https://apim-kx-test.azure-api.net
+  - url: https://kx-dev.azure-api.net
 paths:
   /pet:
     put:
