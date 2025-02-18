@@ -1,6 +1,6 @@
 {
   "properties": {
-    "loggerId": "/subscriptions/56a35543-54ea-40cf-9231-f5276f74ab63/resourceGroups/komatsu-poc/providers/Microsoft.ApiManagement/service/APIM-kx-test/loggers/azuremonitor",
+    "loggerId": "/subscriptions/4af3974c-2eab-4b8e-85ac-4d43bbe70cdf/resourceGroups/komatsu-poc/providers/Microsoft.ApiManagement/service/kx-dev/loggers/azuremonitor",
     "backend": {
       "request": {
         "dataMasking": {
