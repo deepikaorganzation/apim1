@@ -17,71 +17,78 @@ jobs:
   setup-and-test:
     runs-on: ubuntu-latest
     steps:
-      - name: Install jq
-        run: sudo apt-get install -y jq
+    - name: Checkout code
+      uses: actions/checkout@v2  # Checkout the repository code
 
-      - name: Set up Node.js, Install Dependencies, and Run Postman Tests
-        id: postman_tests
-        env: 
-          collection_path: ${{github.workspace}}/${{ inputs.collection_path }}
-          environment_path: ${{github.workspace}}/${{ inputs.environment_path }}
-        run: |
-          echo "Setting up Node.js"
-          npm install -g newman  # Install Newman globally
-          # npm install           # Install dependencies if necessary
-          echo "Node.js setup complete"
+    - name: Install dependencies
+      run: |
+        echo "Setting up Node.js"
+        sudo apt-get update
+        sudo apt-get install -y jq  # jq for processing JSON files
+        npm install -g newman      # Install Newman globally
 
-          # Resolve the paths correctly based on the workspace
-          echo "Running Postman tests for environment: $environment_path"
-          echo "Running Postman tests for collection: $collection_path"
-          # Convert the folders from a comma-separated string to an array
-          folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
-          newman_output_file="newman_output.json"
+    - name: Run Postman collection tests
+      run: |
+        echo "Running Postman tests..."
+        
+        # Get the collection and environment paths
+        collection_path="${{ github.workspace }}/${{ inputs.collection_path }}"
+        environment_path="${{ github.workspace }}/${{ inputs.environment_path }}"
+        
+        echo "Collection Path: $collection_path"
+        echo "Environment Path: $environment_path"
+
+        # Convert the folders from a comma-separated string to an array
+        folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
+
+        # File to store the output in JSON format
+        newman_output_file="newman_output.json"
+
+        # Run tests for each folder
+        for folder in $folders; do
+          echo "Running tests for folder: $folder"
+          newman run "$collection_path" -e "$environment_path" --folder "$folder" -r json --reporter-json-export "$newman_output_file"
           
-          for folder in $folders; do
-            echo "Running tests for folder: $folder"
-            newman run "$collection_path" -e "$environment_path" --folder "$folder" -r json --reporter-json-export "$newman_output_file"
-            ls -l "$newman_output_file"
-            cat "$newman_output_file"
-          done
-          
-          if [[ -f "$newman_output_file" && -s "$newman_output_file" ]]; then
-            total_tests=$(jq '.run.stats.total' $newman_output_file)
-            failed_tests=$(jq '.run.stats.failures' $newman_output_file)
-            passed_tests=$((total_tests - failed_tests))
-            success_percentage=$((100 * passed_tests / total_tests))
-            echo "Test-Result: $success_percentage%"
-            echo "::notice::Test-Result: $success_percentage%"
-            
-            if [ $success_percentage -lt 80 ]; then
-              echo "::warning::Test-Result: $success_percentage%"
-            fi
-            
-            if [ $success_percentage -eq 100 ]; then
-              echo "::success::Test-Result: $success_percentage%"
-            fi
-          else
-            echo "::error::Newman output file not found or empty"
+          # Display output file details
+          ls -l "$newman_output_file"
+          cat "$newman_output_file"
+        done
+
+        # Parse JSON output to calculate success percentage
+        # Parse JSON output to calculate success percentage
+        if [[ -f "$newman_output_file" && -s "$newman_output_file" ]]; then
+        total_tests=$(jq '.run.stats.total' $newman_output_file)
+        failed_tests=$(jq '.run.stats.failures' $newman_output_file)
+
+        if [[ -z "$total_tests" || -z "$failed_tests" ]]; then
+            echo "Error: Could not retrieve test statistics from JSON."
             exit 1
+        fi
+        echo "Total Tests: $total_tests"
+        echo "Failed Tests: $failed_tests"
+        passed_tests=$((total_tests - failed_tests))
+        success_percentage=$((100 * passed_tests / total_tests))
+
+        
+        echo "Passed Tests: $passed_tests"
+        echo "Success Percentage: $success_percentage%"
+        else
+        echo "Error: Output file does not exist or is empty."
+        exit 1
+        fi
+          # Output success percentage
+          echo "Test-Result: $success_percentage%"
+          echo "::notice::Test-Result: $success_percentage%"
+          
+          # Display warning or error based on success rate
+          if [ $success_percentage -lt 80 ]; then
+            echo "::warning::Test-Result: $success_percentage%"  # Warn if below threshold
           fi
-
-          # Parse JSON output to calculate the success percentage
-          # total_tests=$(jq '.run.stats.total' $newman_output_file)
-          # failed_tests=$(jq '.run.stats.failures' $newman_output_file)
-          # passed_tests=$((total_tests - failed_tests))
-          # success_percentage=$((100 * passed_tests / total_tests))
-
-          # # Output the success percentage
-          # echo "Test-Result: $success_percentage%"
-
-          # # Directly log the success percentage to the same step box using ::notice:: for display
-          # echo "::notice::Test-Result: $success_percentage%"  # This will display in the same step's log
-
-          # # Optionally, display warning or error based on success rate
-          # if [ $success_percentage -lt 80 ]; then
-          #   echo "::warning::Test-Result: $success_percentage%"  # Warn if below threshold
-          # fi
-
-          # if [ $success_percentage -eq 100 ]; then
-          #   echo "::success::Test-Result: $success_percentage%"  # Success annotation
-          # fi
+          
+          if [ $success_percentage -eq 100 ]; then
+            echo "::success::Test-Result: $success_percentage%"  # Success annotation
+          fi
+        else
+          echo "::error::Newman output file not found or empty"
+          exit 1
+        fi
