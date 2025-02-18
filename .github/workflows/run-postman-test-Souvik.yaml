@@ -64,7 +64,9 @@ jobs:
           failed_tests=$(jq '.run.stats.failures' $newman_output_file)
           passed_tests=$((total_tests - failed_tests))
           success_percentage=$((100 * passed_tests / total_tests))
-          
+          echo "Total Tests: $total_tests"
+          echo "Failed Tests: $failed_tests"
+          echo "Passed Tests: $passed_tests"
           # Output success percentage
           echo "Test-Result: $success_percentage%"
           echo "::notice::Test-Result: $success_percentage%"
