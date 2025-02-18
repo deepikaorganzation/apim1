@@ -1,0 +1,83 @@
+name: Run Postman Tests Souvik
+
+on:
+  workflow_dispatch:  # Allows you to trigger this workflow manually from the GitHub Actions UI
+    inputs:
+      collection_path:
+        description: 'Path to the Postman collection file'
+        required: true
+        type: string
+      environment_path:
+        description: 'Path to the Postman environment file'
+        required: true
+        type: string
+      folders:
+        description: 'Comma-separated list of folders to run in the Postman collection'
+        required: true
+        type: string
+
+jobs:
+  run-postman-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2  # Checkout the repository code
+
+    - name: Install dependencies
+      run: |
+        echo "Setting up Node.js"
+        sudo apt-get update
+        sudo apt-get install -y jq  # jq for processing JSON files
+        npm install -g newman      # Install Newman globally
+
+    - name: Run Postman collection tests
+      run: |
+        echo "Running Postman tests..."
+        
+        # Get the collection and environment paths
+        collection_path="${{ github.workspace }}/${{ inputs.collection_path }}"
+        environment_path="${{ github.workspace }}/${{ inputs.environment_path }}"
+        
+        echo "Collection Path: $collection_path"
+        echo "Environment Path: $environment_path"
+
+        # Convert the folders from a comma-separated string to an array
+        folders=$(echo "${{ inputs.folders }}" | tr "," "\n")
+
+        # File to store the output in JSON format
+        newman_output_file="newman_output.json"
+
+        # Run tests for each folder
+        for folder in $folders; do
+          echo "Running tests for folder: $folder"
+          newman run "$collection_path" -e "$environment_path" --folder "$folder" -r json --reporter-json-export "$newman_output_file"
+          
+          # Display output file details
+          ls -l "$newman_output_file"
+          cat "$newman_output_file"
+        done
+
+        # Parse JSON output to calculate success percentage
+        if [[ -f "$newman_output_file" && -s "$newman_output_file" ]]; then
+          total_tests=$(jq '.run.stats.total' $newman_output_file)
+          failed_tests=$(jq '.run.stats.failures' $newman_output_file)
+          passed_tests=$((total_tests - failed_tests))
+          success_percentage=$((100 * passed_tests / total_tests))
+          
+          # Output success percentage
+          echo "Test-Result: $success_percentage%"
+          echo "::notice::Test-Result: $success_percentage%"
+          
+          # Display warning or error based on success rate
+          if [ $success_percentage -lt 80 ]; then
+            echo "::warning::Test-Result: $success_percentage%"  # Warn if below threshold
+          fi
+          
+          if [ $success_percentage -eq 100 ]; then
+            echo "::success::Test-Result: $success_percentage%"  # Success annotation
+          fi
+        else
+          echo "::error::Newman output file not found or empty"
+          exit 1
+        fi
