@@ -29,8 +29,8 @@ jobs:
           echo "Node.js setup complete"
 
           # Resolve the paths correctly based on the workspace
-          collection_path="${{ github.workspace }}/${{ inputs.collection_path }}"
-          environment_path="${{ github.workspace }}/${{ inputs.environment_path }}"
+          collection_path="${{ inputs.collection_path }}"
+          environment_path="${{ inputs.environment_path }}"
           echo "Running Postman tests for environment: $environment_path"
 
           # Convert the folders from a comma-separated string to an array
