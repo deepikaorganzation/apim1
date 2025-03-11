@@ -19,13 +19,7 @@ paths:
       responses:
         '200':
           description: 
-  /myRes:
-    put:
-      summary: Putres
-      operationId: putres
-      responses:
-        '200':
-          description: 
+ 
 components:
   securitySchemes:
     apiKeyHeader:
