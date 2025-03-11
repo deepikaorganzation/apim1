@@ -19,6 +19,13 @@ paths:
       responses:
         '200':
           description: 
+
+    get:
+      summary: GetValue
+      operationId: getvalue
+      responses:
+        '200':
+          description:
  
 components:
   securitySchemes:
