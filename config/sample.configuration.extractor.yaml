@@ -1,0 +1,5 @@
+ apiNames:
+  - Sample
+
+operations:
+  - del
