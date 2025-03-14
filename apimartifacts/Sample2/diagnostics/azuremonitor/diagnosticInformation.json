@@ -1,0 +1,34 @@
+{
+  "properties": {
+    "loggerId": "/subscriptions/54046951-33c9-43a8-b297-54bbd93112ab/resourceGroups/komatsupoc/providers/Microsoft.ApiManagement/service/souvik-dev-pox/loggers/azuremonitor",
+    "backend": {
+      "request": {
+        "dataMasking": {
+          "queryParams": [
+            {
+              "mode": "Hide",
+              "value": "*"
+            }
+          ]
+        }
+      }
+    },
+    "frontend": {
+      "request": {
+        "dataMasking": {
+          "queryParams": [
+            {
+              "mode": "Hide",
+              "value": "*"
+            }
+          ]
+        }
+      }
+    },
+    "logClientIp": true,
+    "sampling": {
+      "percentage": 100,
+      "samplingType": "fixed"
+    }
+  }
+}
