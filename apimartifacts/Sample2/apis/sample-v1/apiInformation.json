@@ -1,0 +1,21 @@
+{
+  "properties": {
+    "path": "",
+    "apiRevision": "1",
+    "apiVersion": "v1",
+    "apiVersionSetId": "/subscriptions/54046951-33c9-43a8-b297-54bbd93112ab/resourceGroups/komatsupoc/providers/Microsoft.ApiManagement/service/souvik-dev-pox/apiVersionSets/67d7c2fb69dc399275ec0a8d",
+    "authenticationSettings": {},
+    "description": "",
+    "isCurrent": true,
+    "displayName": "Sample",
+    "protocols": [
+      "https"
+    ],
+    "serviceUrl": "https://httpbin.org",
+    "subscriptionKeyParameterNames": {
+      "header": "Ocp-Apim-Subscription-Key",
+      "query": "subscription-key"
+    },
+    "subscriptionRequired": true
+  }
+}
