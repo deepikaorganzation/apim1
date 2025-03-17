@@ -6,7 +6,7 @@ info:
 servers:
   - url: https://souvik-dev-pox.azure-api.net/v1
 paths:
-  /myresource:
+  /v1/myresource:
     get:
       summary: GetName
       description: GetName
@@ -21,7 +21,7 @@ paths:
       responses:
         '200':
           description: ''
-  /myResource:
+  /v1/myResource:
     delete:
       summary: del
       description: del
