@@ -20,13 +20,9 @@ on:
         - uat
         - prod
       COMMIT_ID_CHOICE:
-        description: 'Choose "publish-all-artifacts-in-repo" only when you want to force republishing all artifacts (e.g. after build failure). Otherwise stick with the default behavior of "publish-artifacts-in-last-commit"'
+        description: 'Commit Id'
         required: true
-        type: choice
-        default: "publish-artifacts-in-last-commit"
-        options:
-          - "publish-artifacts-in-last-commit"
-          - "publish-all-artifacts-in-repo"
+        type: string
       ARTIFACT_NAME:
         description: 'Name of the Repo Folder'     
         required: true
