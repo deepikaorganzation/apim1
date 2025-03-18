@@ -24,6 +24,12 @@ paths:
       summary: PostName
       description: PostName
       operationId: postname
+      parameters:
+        - name: yourHead
+          in: header
+          description: Sample
+          schema:
+            type: string
       responses:
         '200':
           description: ''
