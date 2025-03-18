@@ -29,7 +29,7 @@ paths:
       responses:
         '200':
           description: ''
-  /myResourcev1:
+  /v2/myresourcev:
     get:
       summary: Nice
       operationId: nice
@@ -41,7 +41,7 @@ paths:
       operationId: verynice
       responses:
         '200':
-          description:
+          description: 
           
 components:
   securitySchemes:
