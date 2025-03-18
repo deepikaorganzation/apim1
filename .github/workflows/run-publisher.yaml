@@ -39,7 +39,7 @@ jobs:
     outputs:
       commit_id: ${{ steps.commit.outputs.commit_id }}
   #Publish with Commit ID
-  Push-Changes-To-APIM-Dev-With-Commit-ID:
+  Push-Changes-To-APIM-With-Commit-ID:
     if: (github.event.inputs.COMMIT_ID_CHOICE != '')
     needs: get-commit
     uses: ./.github/workflows/run-publisher-with-env.yaml
