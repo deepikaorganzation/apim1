@@ -2,9 +2,9 @@ openapi: 3.0.1
 info:
   title: Sample
   description: ''
-  version: v1
+  version: ''
 servers:
-  - url: https://souvik-dev-pox.azure-api.net/v1
+  - url: https://souvik-dev-pox.azure-api.net
 paths:
   /myresource:
     get:
@@ -31,8 +31,8 @@ paths:
           description: ''
   /myResourcev1:
     get:
-      summary: Nice
-      operationId: nice
+      summary: Verynice
+      operationId: verynice
       responses:
         '200':
           description: 
