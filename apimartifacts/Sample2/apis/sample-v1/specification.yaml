@@ -37,7 +37,7 @@ paths:
         '200':
           description: 
     get:
-      summary: VeryNice
+      summary: Verynice
       operationId: verynice
       responses:
         '200':
