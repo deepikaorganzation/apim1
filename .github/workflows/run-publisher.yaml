@@ -44,7 +44,8 @@ jobs:
     needs: [get-commit]
     steps:
       - name: Print the commit id
-        run: echo ${{ needs.get-commit.outputs.commit_id }}
+        run: 
+          "echo ${{ needs.get-commit.outputs.commit_id }}, ${GITHUB_SHA}"
   #Publish with Commit ID
   Push-Changes-To-APIM-With-Commit-ID:
     if: (github.event.inputs.COMMIT_ID_CHOICE != '')
