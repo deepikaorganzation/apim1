@@ -36,6 +36,13 @@ paths:
       responses:
         '200':
           description: 
+    get:
+      summary: VeryNice
+      operationId: verynice
+      responses:
+        '200':
+          description:
+          
 components:
   securitySchemes:
     apiKeyHeader:
