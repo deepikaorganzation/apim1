@@ -48,6 +48,12 @@ paths:
       responses:
         '200':
           description: 
+    put:
+      summary: Icecube
+      operationId: icecube
+      responses:
+        '200':
+          description: 
 components:
   securitySchemes:
     apiKeyHeader:
