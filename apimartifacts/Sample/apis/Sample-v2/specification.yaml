@@ -53,6 +53,12 @@ paths:
     post:
       summary: dog
       operationId: dog
+      parameters:
+        - name: myHead
+          in: head
+          description: Sample
+          schema:
+            type: string
       responses:
         '200':
           description: 
