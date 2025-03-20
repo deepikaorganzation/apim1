@@ -40,9 +40,22 @@ paths:
       summary: Nice
       description: Nice
       operationId: nice
+      parameters:
+        - name: Abc
+          in: query
+          description: my q
+          schema:
+            type: string
       responses:
         '200':
           description: ''
+  /souvik:
+    post:
+      summary: dog
+      operationId: dog
+      responses:
+        '200':
+          description: 
 components:
   securitySchemes:
     apiKeyHeader:
