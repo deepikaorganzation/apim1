@@ -1,9 +1,19 @@
- apiNames:
+apiNames:
   - Sample
   - Sample-v2
-  
- namedValueNames:
+
+namedValueNames:
   - kx-test
 
- policyFragmentNames:
+policyFragmentNames:
   - mypolicyFrag
+
+# Extract all policies (global, API, and operation-level)
+extractPolicies: true
+
+# If you want to include product-level information
+extractProducts: true
+
+# Optionally, if you want to extract any other resources like keys or settings, you can include them here
+# extractKeys: true
+# extractSettings: true
