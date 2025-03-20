@@ -20,6 +20,10 @@
 	<!-- Customize the responses -->
 	<outbound>
 		<base />
+		<set-header name="headtotoe" exists-action="override">
+			<value>
+			</value>
+		</set-header>
 	</outbound>
 	<!-- Handle exceptions and customize error responses  -->
 	<on-error>
