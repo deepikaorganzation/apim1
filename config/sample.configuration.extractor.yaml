@@ -1,5 +1,9 @@
  apiNames:
   - Sample
+  - Sample-v2
+  
+ namedValueNames:
+  - namedValues
 
- operations:
-  - del
+ policyFragmentNames:
+  - mypolicyFrag
