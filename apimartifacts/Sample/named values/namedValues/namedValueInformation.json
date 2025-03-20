@@ -1,0 +1,8 @@
+{
+  "properties": {
+    "displayName": "kx-test",
+    "secret": false,
+    "tags": [],
+    "value": "abcde"
+  }
+}
