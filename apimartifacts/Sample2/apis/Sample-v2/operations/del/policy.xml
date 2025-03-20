@@ -13,7 +13,7 @@
 			<set-header name="Content-Type" exists-action="override">
 				<value>application/json</value>
 			</set-header>
-			<set-body>{"Message": "Welcome To {{environment-name}} Ennvironment"}</set-body>
+			<set-body>{"Message": "Welcome To dev Ennvironment"}</set-body>
 		</return-response>
 	</inbound>
 	<!-- Control if and how the requests are forwarded to services  -->
