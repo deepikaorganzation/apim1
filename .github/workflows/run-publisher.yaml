@@ -66,7 +66,7 @@ jobs:
     secrets: inherit
    
   # Add a combined step for Node.js setup, installing dependencies, and running Postman tests
-  Run-TestCase-For-Dev-With-Commit-ID:
+  Run-TestCase-With-Commit-ID:
     needs: [Push-Changes-To-APIM-With-Commit-ID]
     if:  (${{ needs.Push-Changes-To-APIM-With-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
@@ -75,7 +75,7 @@ jobs:
       environment_path: apimartifacts/${{ github.event.inputs.ARTIFACT_NAME }}/postmanCollection/testEnvpostman_environment.json  # Provide the path to your environment file
       folders: "safe"  # Specify the folders to execute (for non-production)
 
-  Run-TestCase-For-Dev-Without-Commit-ID:
+  Run-TestCase-Without-Commit-ID:
     needs: [Push-Changes-To-APIM-Without-Commit-ID]
     if:  (${{ needs.Push-Changes-To-APIM-Without-Commit-ID.result }} == 'success' )
     uses: ./.github/workflows/run-postman-tests.yaml
