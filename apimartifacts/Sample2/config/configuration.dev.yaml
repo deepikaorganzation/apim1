@@ -1,0 +1,9 @@
+apimServiceName: souvik-dev-pox
+namedValues:
+  - name: namedValues
+    properties:
+      displayName: kx-test
+      value: "abcde"
+policyFragmentNames:
+  - name: mypolicyFrag
+    

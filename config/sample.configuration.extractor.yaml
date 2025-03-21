@@ -1,0 +1,13 @@
+apiNames:
+  - Sample
+  - Sample-v2
+
+namedValueNames:
+  - namedValues
+
+policyFragmentNames:
+  - mypolicyFrag
+
+# Optionally, if you want to extract any other resources like keys or settings, you can include them here
+# extractKeys: true
+# extractSettings: true

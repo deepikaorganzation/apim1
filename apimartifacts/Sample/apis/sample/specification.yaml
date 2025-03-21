@@ -1,0 +1,42 @@
+openapi: 3.0.1
+info:
+  title: Sample
+  description: ''
+  version: '1.0'
+servers:
+  - url: https://souvik-dev-pox.azure-api.net
+paths:
+  /myresource:
+    get:
+      summary: GetName
+      operationId: getname
+      responses:
+        '200':
+          description: 
+    post:
+      summary: PostName
+      operationId: postname
+      responses:
+        '200':
+          description: 
+
+    get:
+      summary: GetValue
+      operationId: getvalue
+      responses:
+        '200':
+          description:
+ 
+components:
+  securitySchemes:
+    apiKeyHeader:
+      type: apiKey
+      name: Ocp-Apim-Subscription-Key
+      in: header
+    apiKeyQuery:
+      type: apiKey
+      name: subscription-key
+      in: query
+security:
+  - apiKeyHeader: [ ]
+  - apiKeyQuery: [ ]
