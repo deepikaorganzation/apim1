@@ -77,7 +77,7 @@ jobs:
           echo "Test-Result: $success_percentage%"
 
           # Set the output for the step for later reference
-          echo "::set-output name=test_result::$success_percentage%"
+          echo "{test_result}={$success_percentage%}">> $GITHUB_OUTPUT
 
           echo "::notice::Test-Result: $success_percentage%"
 
