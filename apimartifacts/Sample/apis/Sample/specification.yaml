@@ -14,13 +14,6 @@ paths:
       responses:
         '200':
           description: ''
-    post:
-      summary: PostName
-      description: PostName
-      operationId: postname
-      responses:
-        '200':
-          description: ''
   /myResource:
     delete:
       summary: del
