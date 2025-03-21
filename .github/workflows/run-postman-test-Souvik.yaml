@@ -32,6 +32,7 @@ jobs:
         npm install -g newman      # Install Newman globally
 
     - name: Run Postman collection tests
+      id: postman-tests
       run: |
           echo "Running Postman tests..."
           
@@ -74,8 +75,12 @@ jobs:
           fi
       
           echo "Test-Result: $success_percentage%"
+
+          # Set the output for the step for later reference
+          echo "::set-output name=test_result::$success_percentage%"
+
           echo "::notice::Test-Result: $success_percentage%"
-      
+
           if [ $success_percentage -lt 80 ]; then
             echo "::warning::Test-Result: $success_percentage%"  # Warn if below threshold
           fi
@@ -83,3 +88,12 @@ jobs:
           if [ $success_percentage -eq 100 ]; then
             echo "::success::Test-Result: $success_percentage%"  # Success annotation
           fi
+
+    - name: Update summary with test results
+      run: |
+        echo "## Test Results" >> $GITHUB_STEP_SUMMARY
+        echo "Total Tests: ${{ steps.postman-tests.outputs.test_result }}" >> $GITHUB_STEP_SUMMARY
+        echo "Test Success Percentage: ${{ steps.postman-tests.outputs.test_result }}" >> $GITHUB_STEP_SUMMARY
+        if [ "${{ steps.postman-tests.outputs.test_result }}" -lt 80 ]; then
+          echo "Warning: Test success percentage is below 80%. Please check the test results." >> $GITHUB_STEP_SUMMARY
+        fi
