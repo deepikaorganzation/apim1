@@ -26,6 +26,12 @@ paths:
       summary: del
       description: del
       operationId: del
+      parameters:
+        - name: myHeader
+          in: header
+          description: Sample
+          schema:
+            type: string
       responses:
         '200':
           description: ''
