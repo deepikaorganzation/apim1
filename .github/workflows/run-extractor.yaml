@@ -51,7 +51,7 @@ jobs:
           
       - name: Print Env variable
         run: |
-          echo "Env Variable:  ${{ github.env.variable }}"
+          echo "Env Variable:  ${{ vars.variable }}"
   
   extract:
     runs-on: ubuntu-latest
