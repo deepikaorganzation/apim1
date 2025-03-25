@@ -43,6 +43,16 @@ env:
   apim_release_version: v6.0.1.4
 
 jobs:
+  read:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.SELECT_SOURCE_ENV }} # change this to match the dev environment created in settings 
+    steps:
+      - uses: actions/checkout@v4
+          
+      - name: Print Env variable
+        run: |
+          echo "Env Variable:  ${{ github.env.variable }}"
+  
   extract:
     runs-on: ubuntu-latest
     environment: ${{ github.event.inputs.SELECT_SOURCE_ENV }} # change this to match the dev environment created in settings 
